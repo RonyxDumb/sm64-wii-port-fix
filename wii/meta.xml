@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+   <name>Super Mario 64</name>
+   <coder>mkst, PalindromicBreadLoaf &amp; Francesco Pio Pipino</coder>
+   <version>1.0</version>
+   <release_date>20260605</release_date>
+   <short_description>Super Mario 64 per Wii</short_description>
+   <long_description>Porting di Super Mario 64 per Nintendo Wii.
+Risolti tutti gli errori di compilazione per le toolchain del 2026 da Francesco Pio Pipino.
+Per maggiori informazioni consulta: https://github.com/mkst/sm64-port/tree/wii</long_description>
+</app>

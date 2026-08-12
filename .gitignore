@@ -1,0 +1,210 @@
+# Object files
+*.o
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# datadump
+/tools/ddump/*
+
+# Text editor remnants
+*.swp
+.vscode/*
+.idea/*
+
+# General project-specific ignores
+__pycache__/*
+doxygen/doxygen/*
+build/*
+*.dump
+*.mio0
+*.z64
+*.map
+.assets-local.txt
+sm64_save_file.bin
+sm64config.txt
+
+# Assets. Generally ignored, but ones with "custom" in the name are fine.
+/levels/**/*.png
+/actors/**/*.png
+/textures/**/*.png
+/assets/**/*.bin
+/sound/**/*.m64
+/sound/**/*.aiff
+!/levels/**/*custom*.png
+!/levels/**/*custom*/**/*.png
+!/actors/**/*custom*.png
+!/actors/**/*custom*/**/*.png
+!/textures/**/*custom*.png
+!/textures/**/*custom*/**/*.png
+!/sound/**/*custom*.m64
+!/sound/**/*custom*/**/*.m64
+!/sound/**/*custom*.aiff
+!/sound/**/*custom*/**/*.aiff
+!/assets/**/*custom*.bin
+!/assets/**/*custom*/**/*.bin
+
+# ================================
+# Super Mario 64 Wii / GameCube
+# ================================
+
+# Build output
+/build/
+/build*
+
+# ROM originale
+/baserom*.z64
+/*.z64
+/*.n64
+/*.v64
+
+# Output Wii / GameCube
+*.dol
+*.elf
+*.map
+*.bin
+
+# ================================
+# Compiled tools
+# ================================
+
+/tools/mio0
+/tools/mio0.exe
+/tools/n64graphics
+/tools/n64graphics.exe
+/tools/n64graphics_ci
+/tools/n64graphics_ci.exe
+/tools/textconv
+/tools/textconv.exe
+/tools/skyconv
+/tools/skyconv.exe
+/tools/vadpcm_enc
+/tools/vadpcm_enc.exe
+/tools/vadpcm_dec
+/tools/vadpcm_dec.exe
+/tools/aiff_extract_codebook
+/tools/aiff_extract_codebook.exe
+/tools/extract_data_for_mio
+/tools/extract_data_for_mio.exe
+/tools/n64cksum
+/tools/n64cksum.exe
+
+# SDK / ADPCM compiled tools
+/tools/sdk-tools/**/vadpcm_*
+/tools/sdk-tools/**/vadpcm_*.exe
+
+# Object files
+*.o
+*.obj
+
+# Libraries
+*.a
+*.lib
+
+# ================================
+# Generated audio
+# ================================
+
+*.aifc
+*.aiff
+*.wav
+
+# Generated codebook files
+*.table
+
+# ================================
+# Temporary files
+# ================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# ================================
+# Logs
+# ================================
+
+*.log
+
+# ================================
+# IDE / Editor
+# ================================
+
+.vscode/
+.idea/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# ================================
+# OS files
+# ================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+.directory
+
+# ================================
+# MSYS2
+# ================================
+
+msys2_shell.cmd
+
+# ================================
+# Python
+# ================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ================================
+# CMake / generic build files
+# ================================
+
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
