@@ -1,7 +1,10 @@
 #ifdef TARGET_GX
 
-#include "macros.h" // for UNUSED
+#include <ogc/system.h>
+#include <ogc/video.h>
+#include <ogc/gx.h>
 
+#include "macros.h" // for UNUSED
 #include "gfx_gx_wm.h"
 
 static GXRModeObj *rmode;
@@ -15,6 +18,11 @@ static void gfx_gx_wm_init(UNUSED const char *game_name, UNUSED bool start_in_fu
 
     rmode = VIDEO_GetPreferredMode(NULL);
 
+    // Se la console è PAL 576i/576p, usiamo la tabella 480i PAL60 / 480p per evitare lo zoom vertical-stretch
+    if (rmode->viTVMode == VI_TVMODE_PAL_INT || rmode->viTVMode == VI_TVMODE_PAL_DS) {
+        rmode = &TVPal528IntDf; // Modalità PAL60 a 480 linee nativa
+    }
+
     // double-buffering
     framebuffer[0] = MEM_K0_TO_K1(SYS_AllocateFramebuffer(rmode));
     framebuffer[1] = MEM_K0_TO_K1(SYS_AllocateFramebuffer(rmode));
@@ -25,8 +33,9 @@ static void gfx_gx_wm_init(UNUSED const char *game_name, UNUSED bool start_in_fu
     VIDEO_SetBlack(false);
     VIDEO_Flush();
     VIDEO_WaitVSync();
-    if (rmode->viTVMode & VI_NON_INTERLACE)
+    if (!(rmode->viTVMode & VI_NON_INTERLACE)) {
         VIDEO_WaitVSync();
+    }
 }
 
 GXRModeObj *gfx_gx_wm_get_rmode(void)
@@ -54,7 +63,7 @@ static void gfx_gx_wm_main_loop(void (*run_one_game_iter)(void))
 static void gfx_gx_wm_get_dimensions(uint32_t *width, uint32_t *height)
 {
     *width = rmode->fbWidth;
-    *height = rmode->xfbHeight;
+    *height = rmode->efbHeight; // <--- CORRETTO: usa efbHeight (480) non xfbHeight
 }
 
 static void gfx_gx_wm_handle_events(void)
@@ -76,13 +85,11 @@ static void gfx_gx_wm_swap_buffers_begin(void)
     VIDEO_SetNextFramebuffer(framebuffer[fb]);
     VIDEO_Flush();
     VIDEO_WaitVSync();
-    // Interlaced screens require two frames to update
-    if (rmode->viTVMode &VI_NON_INTERLACE) {
+
+    // Corretto: Gli schermi INTERLACCIATI richiederanno il secondo VSync
+    if (!(rmode->viTVMode & VI_NON_INTERLACE)) {
         VIDEO_WaitVSync();
     }
-
-    // 30FPS hack
-    VIDEO_WaitVSync();
 }
 
 static void gfx_gx_wm_swap_buffers_end(void)

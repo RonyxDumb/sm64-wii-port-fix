@@ -11,6 +11,8 @@
 #include "gfx_rendering_api.h"
 #include "gfx_gx_wm.h"
 
+#include <ogc/gu.h>
+
 #define TEXTURE_POOL_SIZE 4096
 #define DEFAULT_FIFO_SIZE 256 * 1024
 
@@ -607,12 +609,30 @@ static void gfx_gx_set_zmode_decal(bool zmode_decal)
     zmode_decal_on = zmode_decal;
 }
 
+/*
 static void gfx_gx_set_viewport(int x, int y, int width, int height)
 {
     vp_x = x;
     vp_y = y;
     vp_w = width;
     vp_h = height;
+    gx_issue_viewport(1.0f);
+}
+*/
+static void gfx_gx_set_viewport(int x, int y, int width, int height)
+{
+    GXRModeObj *rmode = gfx_gx_wm_get_rmode();
+
+    // Se il motore passa coordinate relative o fisse (es. 320x240),
+    // dobbiamo rimapparle sul framebuffer reale della Wii:
+    f32 scale_x = (f32)rmode->fbWidth / 640.0f;  // O la coordinata nativa target
+    f32 scale_y = (f32)rmode->efbHeight / 480.0f;
+
+    vp_x = (int)(x * scale_x);
+    vp_y = (int)(y * scale_y);
+    vp_w = (int)(width * scale_x);
+    vp_h = (int)(height * scale_y);
+
     gx_issue_viewport(1.0f);
 }
 
@@ -748,6 +768,7 @@ static void gx_setup_efb(void)
     GX_SetDispCopyGamma(GX_GM_1_0);
 }
 
+/*
 static void gx_build_projection(void)
 {
     const f32 n = GX_NEAR_PLANE;
@@ -766,6 +787,36 @@ static void gx_build_projection(void)
     gx_ortho_mtx[1][1] = 1.0f;
     gx_ortho_mtx[2][2] = 1.0f;
     gx_ortho_mtx[2][3] = -1.0f; // z [0,1] -> [-1,0]
+    gx_ortho_mtx[3][3] = 1.0f;
+}
+*/
+
+
+static void gx_build_projection(void)
+{
+    GXRModeObj *rmode = gfx_gx_wm_get_rmode();
+    f32 aspect = (f32)rmode->fbWidth / (f32)rmode->efbHeight;
+    const f32 fovy = 45.0f;
+    const f32 n = GX_NEAR_PLANE;
+    const f32 f = GX_FAR_PLANE;
+
+    // Calcolo della prospettiva con aspect ratio corretto
+    f32 cotS = 1.0f / tanf((fovy * 0.5f) * (M_PI / 180.0f));
+
+    memset(gx_perspective_mtx, 0, sizeof(gx_perspective_mtx));
+    gx_perspective_mtx[0][0] = cotS / aspect; // <-- Escala x in base all'aspect ratio (no zoom!)
+    gx_perspective_mtx[1][1] = cotS;          // <-- FOV Y
+    gx_perspective_mtx[2][2] = -n / (f - n);
+    gx_perspective_mtx[2][3] = -(n * f) / (f - n);
+    gx_perspective_mtx[3][2] = -1.0f;
+    gx_perspective_mtx[3][3] = 0.0f;
+
+    // Matrice ortografica per HUD / elementi 2D
+    memset(gx_ortho_mtx, 0, sizeof(gx_ortho_mtx));
+    gx_ortho_mtx[0][0] = 1.0f;
+    gx_ortho_mtx[1][1] = 1.0f;
+    gx_ortho_mtx[2][2] = 1.0f;
+    gx_ortho_mtx[2][3] = -1.0f;
     gx_ortho_mtx[3][3] = 1.0f;
 }
 
